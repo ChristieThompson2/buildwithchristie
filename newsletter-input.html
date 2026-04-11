@@ -8,17 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --navy: #0d3456;
-  --steel: #446389;
-  --teal: #63aebf;
-  --champagne: #f1dabb;
-  --champagne-dim: rgba(241,218,187,0.1);
-  --cream: #f5f0e8;
-  --surface: #102847;
-  --border: #1e3f5e;
-  --muted: #7a9ab5;
-}
+:root{--navy:#0d3456;--steel:#446389;--teal:#63aebf;--champagne:#f1dabb;--champagne-dim:rgba(241,218,187,0.1);--cream:#f5f0e8;--surface:#102847;--border:#1e3f5e;--muted:#7a9ab5;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{background:var(--navy);color:var(--cream);font-family:'Karla',sans-serif;font-weight:300;min-height:100vh;padding:clamp(24px,5vw,60px);}
@@ -143,7 +133,7 @@ select option{background:#102847;color:var(--cream);}
             <input type="radio" name="cta" id="cta2" value="investor">
             <label class="cta-card" for="cta2">
               <div class="cta-card-title">Investor Inquiry</div>
-              <div class="cta-card-desc">$20M MEP fund — Azul Capital</div>
+              <div class="cta-card-desc">$20M MEP fund - Azul Capital</div>
             </label>
           </div>
           <div class="cta-option">
@@ -175,7 +165,7 @@ select option{background:#102847;color:var(--cream);}
         </div>
         <div class="highlight-fields" id="highlightFields">
           <input type="text" id="highlightTitle" placeholder="Highlight title (e.g. Direct Investment Opportunity Now Open)" style="margin-bottom:16px;">
-          <textarea id="highlightBody" rows="4" placeholder="Details — what is it, why does it matter, what should readers do..."></textarea>
+          <textarea id="highlightBody" rows="4" placeholder="Details - what is it, why does it matter, what should readers do..."></textarea>
           <div class="char-row"><span class="char-count" id="count5">0 / 400</span></div>
         </div>
       </div>
@@ -183,7 +173,7 @@ select option{background:#102847;color:var(--cream);}
 
     <div class="submit-row">
       <button type="submit" class="submit-btn" id="submitBtn">
-        <span>Generate This Week's Draft</span>
+        <span id="submitText">Generate This Week's Draft</span>
         <span>&#8594;</span>
       </button>
       <div class="error-msg" id="errorMsg">Something went wrong. Check your webhook URL and try again.</div>
@@ -199,17 +189,17 @@ select option{background:#102847;color:var(--cream);}
 </div>
 
 <script>
-const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL_HERE';
+var WEBHOOK = 'https://hook.us2.make.com/uooyea59ktk4p3necb1qd9gc8pojpvph';
 
-const d = new Date();
+var d = new Date();
 document.getElementById('currentDate').textContent = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
 function setupCounter(fieldId,countId,max){
-  const field=document.getElementById(fieldId);
-  const counter=document.getElementById(countId);
+  var field=document.getElementById(fieldId);
+  var counter=document.getElementById(countId);
   if(!field||!counter)return;
-  field.addEventListener('input',()=>{
-    const len=field.value.length;
+  field.addEventListener('input',function(){
+    var len=field.value.length;
     counter.textContent=len+' / '+max;
     counter.classList.toggle('warning',len>max*0.85);
     updateProgress();
@@ -221,12 +211,12 @@ setupCounter('marketNotes','count3',400);
 setupCounter('highlightBody','count5',400);
 
 function updateProgress(){
-  const fields=['whatWorkedOn','lessonTopic','marketNotes'];
-  const filled=fields.filter(id=>document.getElementById(id).value.trim().length>20).length;
+  var fields=['whatWorkedOn','lessonTopic','marketNotes'];
+  var filled=fields.filter(function(id){return document.getElementById(id).value.trim().length>20;}).length;
   document.getElementById('progressFill').style.width=Math.round((filled/fields.length)*100)+'%';
 }
 
-let highlightActive=false;
+var highlightActive=false;
 function toggleHighlight(){
   highlightActive=!highlightActive;
   document.getElementById('highlightToggle').classList.toggle('active',highlightActive);
@@ -235,37 +225,45 @@ function toggleHighlight(){
   document.getElementById('highlightFields').classList.toggle('visible',highlightActive);
 }
 
-document.getElementById('newsletterForm').addEventListener('submit',async(e)=>{
+document.getElementById('newsletterForm').addEventListener('submit',function(e){
   e.preventDefault();
-  const btn=document.getElementById('submitBtn');
-  const errMsg=document.getElementById('errorMsg');
+  var btn=document.getElementById('submitBtn');
+  var errMsg=document.getElementById('errorMsg');
   errMsg.classList.remove('visible');
-  const selectedCTA=document.querySelector('input[name="cta"]:checked').value;
-  const payload={
-    date:d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
-    what_i_worked_on:document.getElementById('whatWorkedOn').value.trim(),
-    lesson_topic:document.getElementById('lessonTopic').value.trim(),
-    market_notes:document.getElementById('marketNotes').value.trim(),
-    cta_selection:selectedCTA,
-    special_highlight:highlightActive?{title:document.getElementById('highlightTitle').value.trim(),body:document.getElementById('highlightBody').value.trim()}:null
-  };
-  if(!payload.what_i_worked_on||!payload.lesson_topic){
+
+  var selectedCTA=document.querySelector('input[name="cta"]:checked').value;
+  var woVal=document.getElementById('whatWorkedOn').value.trim();
+  var ltVal=document.getElementById('lessonTopic').value.trim();
+
+  if(!woVal||!ltVal){
     errMsg.textContent='Please fill in at least sections 01 and 02 before submitting.';
     errMsg.classList.add('visible');
     return;
   }
+
+  var payload={
+    date:d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+    what_i_worked_on:woVal,
+    lesson_topic:ltVal,
+    market_notes:document.getElementById('marketNotes').value.trim(),
+    cta_selection:selectedCTA,
+    special_highlight:highlightActive?{title:document.getElementById('highlightTitle').value.trim(),body:document.getElementById('highlightBody').value.trim()}:null
+  };
+
   btn.classList.add('loading');
-  btn.querySelector('span').textContent='Sending to Make.com...';
-  try{
-    await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'});
-    document.getElementById('mainForm').style.display='none';
-    document.getElementById('successScreen').classList.add('visible');
-  }catch(err){
-    btn.classList.remove('loading');
-    btn.querySelector('span').textContent="Generate This Week's Draft";
-    errMsg.textContent='Connection failed. Check your webhook URL in the config.';
-    errMsg.classList.add('visible');
-  }
+  document.getElementById('submitText').textContent='Sending to Make.com...';
+
+  fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'})
+    .then(function(){
+      document.getElementById('mainForm').style.display='none';
+      document.getElementById('successScreen').classList.add('visible');
+    })
+    .catch(function(){
+      btn.classList.remove('loading');
+      document.getElementById('submitText').textContent="Generate This Week's Draft";
+      errMsg.textContent='Connection failed. Please try again.';
+      errMsg.classList.add('visible');
+    });
 });
 
 function resetForm(){
@@ -278,8 +276,8 @@ function resetForm(){
   document.getElementById('toggleLabel').textContent='Nothing special this week';
   document.getElementById('toggleLabel').classList.remove('active');
   document.getElementById('highlightFields').classList.remove('visible');
-  ['count1','count2','count3','count5'].forEach(id=>{
-    const el=document.getElementById(id);
+  ['count1','count2','count3','count5'].forEach(function(id){
+    var el=document.getElementById(id);
     if(el){el.textContent='0 / '+(id==='count3'||id==='count5'?'400':'500');el.classList.remove('warning');}
   });
 }
