@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Christie Thompson | The Operator Advantage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ec;
+    --cream: #ede9e1;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --charcoal: #1c1c1c;
+    --mid: #3a3a3a;
+    --muted: #888;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: clamp(24px, 5vw, 60px);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.1s forwards;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .nav-event {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hero-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(40px, 8vh, 100px) 0;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s forwards;
+  }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4.5vw, 4rem);
+    line-height: 1.15;
+    font-weight: 900;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 clamp(12px, 2vw, 36px);
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.45s forwards;
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: #aaa;
+    max-width: 520px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.65s forwards;
+  }
+
+  .hero-ctas {
+    margin-top: 48px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.85s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: var(--black);
+    padding: 16px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    padding: 16px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); background: rgba(201,168,76,0.06); transform: translateY(-2px); }
+
+  .hero-rule {
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.0s forwards;
+  }
+
+  /* QUOTE BAND */
+  .quote-band {
+    background: var(--gold);
+    padding: clamp(40px, 7vw, 80px) clamp(24px, 5vw, 60px);
+    position: relative;
+    overflow: hidden;
+  }
+  .quote-band::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 40vw;
+    color: rgba(0,0,0,0.06);
+    position: absolute;
+    top: -20%;
+    left: -2%;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .quote-inner { max-width: 800px; position: relative; }
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-style: italic;
+    color: var(--black);
+    line-height: 1.25;
+  }
+  .quote-attribution {
+    margin-top: 24px;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(10,10,10,0.6);
+    font-weight: 500;
+  }
+
+  /* SECTIONS */
+  section { padding: clamp(60px, 10vw, 120px) clamp(24px, 5vw, 60px); }
+
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.4;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: start;
+  }
+  @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
+
+  .about-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.1;
+    font-weight: 700;
+  }
+  .about-headline em { font-style: italic; color: var(--gold); }
+
+  .about-body { color: #aaa; font-size: 1.05rem; line-height: 1.8; }
+  .about-body p + p { margin-top: 20px; }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.06);
+    margin-top: clamp(40px, 6vw, 80px);
+  }
+  .stat-cell {
+    background: var(--charcoal);
+    padding: clamp(24px, 4vw, 40px);
+    transition: background 0.2s;
+  }
+  .stat-cell:hover { background: #222; }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  /* TALK */
+  .talk-section { background: var(--charcoal); }
+  .talk-inner { max-width: 780px; }
+  .talk-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.15;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+  .talk-title em { font-style: italic; color: var(--gold); }
+  .talk-desc { color: #999; font-size: 1.05rem; line-height: 1.8; margin-bottom: 40px; }
+
+  .takeaways { list-style: none; display: grid; gap: 16px; }
+  .takeaways li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    font-size: 0.95rem;
+    color: #bbb;
+    line-height: 1.6;
+  }
+  .takeaways li::before { content: '—'; color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+
+  /* PATHS */
+  .paths-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: rgba(255,255,255,0.04);
+  }
+  @media (max-width: 700px) { .paths-grid { grid-template-columns: 1fr; } }
+
+  .path-card {
+    background: var(--charcoal);
+    padding: clamp(32px, 5vw, 56px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: background 0.2s;
+  }
+  .path-card:hover { background: #222; }
+
+  .path-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(201,168,76,0.15);
+    line-height: 1;
+  }
+  .path-label { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+  .path-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .path-desc { color: #999; font-size: 0.95rem; line-height: 1.7; flex: 1; }
+
+  .path-tiers { list-style: none; display: grid; gap: 8px; margin-top: 8px; }
+  .path-tiers li {
+    font-size: 0.82rem;
+    color: #bbb;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .path-tiers li:last-child { border-bottom: none; }
+  .path-tiers .price { color: var(--gold); font-weight: 500; }
+  .path-cta { margin-top: 8px; }
+
+  /* FOOTER */
+  footer {
+    padding: clamp(40px, 6vw, 60px) clamp(24px, 5vw, 60px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .footer-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .hero-ctas { flex-direction: column; }
+    .btn-primary, .btn-secondary { justify-content: center; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <nav class="nav">
+    <span class="nav-logo">Christie Thompson</span>
+    <span class="nav-event">Zero Down 2025</span>
+  </nav>
+
+  <div class="hero-body">
+    <p class="eyebrow">The Operator Advantage</p>
+    <h1 class="hero-headline">
+      <span>I didn't just study the deal.</span><em>I ran it.</em>
+    </h1>
+    <p class="hero-sub">
+      Fortune 500 operator. MEP acquisition architect. Real estate investor. If you're buying or running a business, this is the room you've been looking for.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://buildwithchristie.com" class="btn-primary">Work With Christie &#8594;</a>
+      <a href="mailto:invest@azulcapitalpartners.com" class="btn-secondary">Invest in the Fund</a>
+    </div>
+  </div>
+
+  <div class="hero-rule"></div>
+</section>
+
+<!-- QUOTE BAND -->
+<div class="quote-band">
+  <div class="quote-inner">
+    <p class="quote-text">&#8220;Christie was the person. She was the deal.&#8221;</p>
+    <p class="quote-attribution">&#8212; Vic Keller &nbsp;&#183;&nbsp; Investor &amp; EPIC Community Leader</p>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section>
+  <p class="section-label reveal">Background</p>
+  <div class="about-grid reveal">
+    <div>
+      <h2 class="about-headline">
+        Built to run<br>things at <em>scale</em>.
+      </h2>
+    </div>
+    <div class="about-body">
+      <p>I spent years inside Fortune 500 companies leading divisions from $15M to $150M in revenue. Not as a consultant watching from the outside &#8212; as the operator with P&amp;L ownership, teams to develop, and results that had to show up on a spreadsheet.</p>
+      <p>Now I'm building a PE-backed MEP mechanical contractor rollup through Azul Capital Partners &#8212; acquiring HVAC, plumbing, and mechanical businesses across the U.S. I'm also a real estate investor with six years in the market across multiple asset classes.</p>
+      <p>I know what it costs to build something real. And I know the shortcuts that actually work.</p>
+    </div>
+  </div>
+
+  <div class="stats-row reveal">
+    <div class="stat-cell">
+      <div class="stat-number">$150M</div>
+      <div class="stat-label">Max division revenue led</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">6 yrs</div>
+      <div class="stat-label">Real estate investor</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">$20M</div>
+      <div class="stat-label">Fund target &#8212; Azul Capital</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-number">MEP</div>
+      <div class="stat-label">Mechanical contractor rollup</div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNATURE TALK -->
+<section class="talk-section">
+  <p class="section-label reveal">Signature Talk</p>
+  <div class="talk-inner">
+    <h2 class="talk-title reveal"><em>The Operator Advantage</em> &#8212; How I Built a PE-Backed Rollup from the Inside Out</h2>
+    <p class="talk-desc reveal">Most people trying to buy businesses have never run one at scale. This talk is about the asymmetric edge you get when you bring real operational depth to the acquisition table &#8212; and how to use it.</p>
+    <ul class="takeaways reveal">
+      <li>Why operators win deals that pure financial buyers lose &#8212; and how to position yourself that way</li>
+      <li>The acquisition criteria that filter out noise and find businesses worth owning</li>
+      <li>How to build a rollup thesis that attracts serious capital, not just promises</li>
+      <li>The systems that make a multi-business portfolio manageable without burning out</li>
+      <li>What I'd do differently &#8212; and what I'd do the same</li>
+    </ul>
+  </div>
+</section>
+
+<!-- TWO PATHS -->
+<section>
+  <p class="section-label reveal">How We Work Together</p>
+  <p class="reveal" style="color:#aaa; max-width:580px; margin-bottom:48px; font-size:1.05rem; line-height:1.7;">
+    Two ways to be in the room with me. One if you're building or operating a business. One if you're looking to deploy capital.
+  </p>
+
+  <div class="paths-grid reveal">
+
+    <div class="path-card">
+      <div class="path-number">01</div>
+      <div>
+        <p class="path-label">For Operators</p>
+        <h3 class="path-title">Business Advisory</h3>
+      </div>
+      <p class="path-desc">Whether you're buying your first deal, building a portfolio, or trying to stop being the bottleneck in your own business &#8212; this is direct access to someone who's done it at every size.</p>
+      <ul class="path-tiers">
+        <li><span>Strategy Call</span><span class="price">$600 / 60 min</span></li>
+        <li><span>Monthly Advisory</span><span class="price">$2,500 / mo</span></li>
+        <li><span>Deep Engagement</span><span class="price">$7,500 / mo</span></li>
+      </ul>
+      <div class="path-cta">
+        <a href="https://buildwithchristie.com" class="btn-primary">Apply to Work Together &#8594;</a>
+      </div>
+    </div>
+
+    <div class="path-card">
+      <div class="path-number">02</div>
+      <div>
+        <p class="path-label">For Investors</p>
+        <h3 class="path-title">Azul Capital Partners</h3>
+      </div>
+      <p class="path-desc">We're building a U.S. MEP mechanical contractor rollup &#8212; HVAC, plumbing, and mechanical businesses with proven cash flow. Operator-led. Thesis-driven. Raising a $20M fund now.</p>
+      <ul class="path-tiers">
+        <li><span>Target fund size</span><span class="price">$20M</span></li>
+        <li><span>Focus</span><span class="price">MEP &#8212; Across the U.S.</span></li>
+        <li><span>Minimum criteria</span><span class="price">$1M SDE</span></li>
+      </ul>
+      <div class="path-cta">
+        <a href="mailto:invest@azulcapitalpartners.com" class="btn-secondary">Request Investment Deck &#8594;</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Christie Thompson</span>
+  <div class="footer-links">
+    <a href="https://buildwithchristie.com">buildwithchristie.com</a>
+    <a href="https://azulcapitalpartners.com">azulcapitalpartners.com</a>
+    <a href="mailto:invest@azulcapitalpartners.com">invest@azulcapitalpartners.com</a>
+  </div>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.12 }
+  );
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
