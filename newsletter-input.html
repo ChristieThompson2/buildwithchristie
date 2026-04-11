@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Operator Dispatch | Weekly Input</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d3456;
+  --steel: #446389;
+  --teal: #63aebf;
+  --champagne: #f1dabb;
+  --champagne-dim: rgba(241,218,187,0.1);
+  --cream: #f5f0e8;
+  --surface: #102847;
+  --border: #1e3f5e;
+  --muted: #7a9ab5;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--navy);color:var(--cream);font-family:'Karla',sans-serif;font-weight:300;min-height:100vh;padding:clamp(24px,5vw,60px);}
+.header{border-bottom:1px solid var(--border);padding-bottom:32px;margin-bottom:48px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;opacity:0;animation:fadeIn 0.6s ease 0.1s forwards;}
+.issue-label{font-size:0.65rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.header-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:0.04em;line-height:1;color:var(--cream);}
+.header-title span{color:var(--champagne);}
+.header-meta{font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-align:right;}
+.header-meta strong{display:block;color:var(--cream);font-size:0.85rem;font-weight:500;}
+.progress-bar{height:2px;background:var(--border);margin-bottom:48px;border-radius:2px;overflow:hidden;opacity:0;animation:fadeIn 0.6s ease 0.3s forwards;}
+.progress-fill{height:100%;background:var(--champagne);width:0%;transition:width 0.4s ease;border-radius:2px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border);margin-bottom:2px;}
+.form-full{background:var(--border);border:1px solid var(--border);margin-bottom:2px;}
+@media(max-width:700px){.form-grid{grid-template-columns:1fr;}}
+.field{background:var(--surface);padding:clamp(20px,3vw,32px);opacity:0;animation:fadeIn 0.5s ease forwards;}
+.field:nth-child(1){animation-delay:0.2s;}
+.field:nth-child(2){animation-delay:0.3s;}
+.field:nth-child(3){animation-delay:0.35s;}
+.field:nth-child(4){animation-delay:0.4s;}
+.field-full{background:var(--surface);padding:clamp(20px,3vw,32px);opacity:0;animation:fadeIn 0.5s ease 0.55s forwards;}
+.field-number{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:rgba(241,218,187,0.1);line-height:1;margin-bottom:4px;}
+.field-label{font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;display:block;}
+.field-hint{font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+textarea,input,select{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--cream);font-family:'Karla',sans-serif;font-weight:300;font-size:0.95rem;line-height:1.6;padding:10px 0;outline:none;transition:border-color 0.2s;resize:none;-webkit-appearance:none;}
+textarea:focus,input:focus,select:focus{border-bottom-color:var(--champagne);}
+textarea::placeholder,input::placeholder{color:#2a4a65;}
+select{cursor:pointer;background:var(--surface);padding:10px 0;}
+select option{background:#102847;color:var(--cream);}
+.char-row{display:flex;justify-content:flex-end;margin-top:6px;}
+.char-count{font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;}
+.char-count.warning{color:#e07b39;}
+.cta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:4px;}
+@media(max-width:500px){.cta-grid{grid-template-columns:1fr;}}
+.cta-option{position:relative;}
+.cta-option input[type="radio"]{position:absolute;opacity:0;width:0;height:0;}
+.cta-card{display:block;padding:14px 16px;border:1px solid var(--border);cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+.cta-card:hover{border-color:rgba(99,174,191,0.5);}
+.cta-option input:checked + .cta-card{border-color:var(--champagne);background:var(--champagne-dim);}
+.cta-card-title{font-size:0.8rem;font-weight:600;color:var(--cream);letter-spacing:0.05em;margin-bottom:2px;}
+.cta-card-desc{font-size:0.7rem;color:var(--muted);line-height:1.4;}
+.toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;cursor:pointer;}
+.toggle{width:36px;height:20px;background:var(--border);border-radius:10px;position:relative;transition:background 0.2s;flex-shrink:0;}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;background:var(--muted);border-radius:50%;top:3px;left:3px;transition:left 0.2s,background 0.2s;}
+.toggle.active{background:var(--champagne-dim);border:1px solid var(--champagne);}
+.toggle.active::after{left:19px;background:var(--champagne);}
+.toggle-label{font-size:0.8rem;color:var(--muted);}
+.toggle-label.active{color:var(--cream);}
+.highlight-fields{display:none;}
+.highlight-fields.visible{display:block;}
+.submit-row{margin-top:2px;opacity:0;animation:fadeIn 0.5s ease 0.7s forwards;}
+.submit-btn{width:100%;background:var(--champagne);color:var(--navy);border:none;padding:20px 32px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.15em;cursor:pointer;transition:background 0.2s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:16px;}
+.submit-btn:hover{background:#f7edd8;}
+.submit-btn:active{transform:scale(0.99);}
+.submit-btn.loading{opacity:0.6;pointer-events:none;}
+.success-screen{display:none;text-align:center;padding:clamp(60px,10vw,120px) clamp(24px,5vw,60px);border:1px solid var(--border);}
+.success-screen.visible{display:block;}
+.success-icon{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--champagne);margin-bottom:16px;}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:0.05em;margin-bottom:16px;}
+.success-msg{color:var(--muted);font-size:1rem;line-height:1.7;max-width:480px;margin:0 auto 32px;}
+.success-another{background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px 28px;font-family:'Karla',sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+.success-another:hover{border-color:var(--champagne);color:var(--champagne);}
+.error-msg{display:none;background:rgba(200,50,50,0.1);border:1px solid rgba(200,50,50,0.3);color:#f87171;padding:14px 20px;font-size:0.85rem;margin-top:12px;}
+.error-msg.visible{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<div id="mainForm">
+  <div class="header">
+    <div class="header-left">
+      <div class="issue-label">The Operator Dispatch</div>
+      <div class="header-title">Weekly<br><span>Input</span></div>
+    </div>
+    <div class="header-meta">
+      <strong id="currentDate"></strong>
+      Christie Thompson
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <form id="newsletterForm">
+    <div class="form-grid">
+      <div class="field">
+        <div class="field-number">01</div>
+        <label class="field-label" for="whatWorkedOn">What I'm Working On</label>
+        <div class="field-hint">Raw and specific. What deal, problem, or win was on your plate this week?</div>
+        <textarea id="whatWorkedOn" rows="5" placeholder="e.g. Reviewed LOI on a Memphis HVAC business, $2.1M SDE. Owner wants to stay on 2 years..."></textarea>
+        <div class="char-row"><span class="char-count" id="count1">0 / 500</span></div>
+      </div>
+      <div class="field">
+        <div class="field-number">02</div>
+        <label class="field-label" for="lessonTopic">The Lesson</label>
+        <div class="field-hint">One tactical thing you learned or use. Specific enough someone could apply it this week.</div>
+        <textarea id="lessonTopic" rows="5" placeholder="e.g. How I use SDE margin as a proxy for owner dependency before I ever get on a call..."></textarea>
+        <div class="char-row"><span class="char-count" id="count2">0 / 500</span></div>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <div class="field-number">03</div>
+        <label class="field-label" for="marketNotes">Market Pulse Notes</label>
+        <div class="field-hint">MEP sector news, PE activity, interest rate movement, or macro worth flagging.</div>
+        <textarea id="marketNotes" rows="5" placeholder="e.g. HVAC demand up 12% YoY&#10;PE multiples compressing in trades&#10;SBA loan activity picking up..."></textarea>
+        <div class="char-row"><span class="char-count" id="count3">0 / 400</span></div>
+      </div>
+      <div class="field">
+        <div class="field-number">04</div>
+        <label class="field-label">This Week's CTA</label>
+        <div class="field-hint">One door only. Pick where you want readers to go this week.</div>
+        <div class="cta-grid">
+          <div class="cta-option">
+            <input type="radio" name="cta" id="cta1" value="consulting" checked>
+            <label class="cta-card" for="cta1">
+              <div class="cta-card-title">Consulting</div>
+              <div class="cta-card-desc">buildwithchristie.com intake</div>
+            </label>
+          </div>
+          <div class="cta-option">
+            <input type="radio" name="cta" id="cta2" value="investor">
+            <label class="cta-card" for="cta2">
+              <div class="cta-card-title">Investor Inquiry</div>
+              <div class="cta-card-desc">$20M MEP fund — Azul Capital</div>
+            </label>
+          </div>
+          <div class="cta-option">
+            <input type="radio" name="cta" id="cta3" value="office_hours">
+            <label class="cta-card" for="cta3">
+              <div class="cta-card-title">Office Hours</div>
+              <div class="cta-card-desc">Recurring weekly meeting link</div>
+            </label>
+          </div>
+          <div class="cta-option">
+            <input type="radio" name="cta" id="cta4" value="car_wash_screener">
+            <label class="cta-card" for="cta4">
+              <div class="cta-card-title">Car Wash Screener</div>
+              <div class="cta-card-desc">Zero Down 2.0 tool</div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-full">
+      <div class="field-full">
+        <div class="field-number">05</div>
+        <label class="field-label">Special Highlight</label>
+        <div class="field-hint">Acquisition update, direct deal opportunity, event, or announcement.</div>
+        <div class="toggle-row" id="toggleRow" onclick="toggleHighlight()">
+          <div class="toggle" id="highlightToggle"></div>
+          <span class="toggle-label" id="toggleLabel">Nothing special this week</span>
+        </div>
+        <div class="highlight-fields" id="highlightFields">
+          <input type="text" id="highlightTitle" placeholder="Highlight title (e.g. Direct Investment Opportunity Now Open)" style="margin-bottom:16px;">
+          <textarea id="highlightBody" rows="4" placeholder="Details — what is it, why does it matter, what should readers do..."></textarea>
+          <div class="char-row"><span class="char-count" id="count5">0 / 400</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span>Generate This Week's Draft</span>
+        <span>&#8594;</span>
+      </button>
+      <div class="error-msg" id="errorMsg">Something went wrong. Check your webhook URL and try again.</div>
+    </div>
+  </form>
+</div>
+
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">&#10003;</div>
+  <div class="success-title">Draft Request Sent</div>
+  <p class="success-msg">Your notes are on their way to Make.com. Claude is drafting this week's issue now. Check your inbox in a few minutes for the review copy.</p>
+  <button class="success-another" onclick="resetForm()">Submit Another Week</button>
+</div>
+
+<script>
+const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL_HERE';
+
+const d = new Date();
+document.getElementById('currentDate').textContent = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+function setupCounter(fieldId,countId,max){
+  const field=document.getElementById(fieldId);
+  const counter=document.getElementById(countId);
+  if(!field||!counter)return;
+  field.addEventListener('input',()=>{
+    const len=field.value.length;
+    counter.textContent=len+' / '+max;
+    counter.classList.toggle('warning',len>max*0.85);
+    updateProgress();
+  });
+}
+setupCounter('whatWorkedOn','count1',500);
+setupCounter('lessonTopic','count2',500);
+setupCounter('marketNotes','count3',400);
+setupCounter('highlightBody','count5',400);
+
+function updateProgress(){
+  const fields=['whatWorkedOn','lessonTopic','marketNotes'];
+  const filled=fields.filter(id=>document.getElementById(id).value.trim().length>20).length;
+  document.getElementById('progressFill').style.width=Math.round((filled/fields.length)*100)+'%';
+}
+
+let highlightActive=false;
+function toggleHighlight(){
+  highlightActive=!highlightActive;
+  document.getElementById('highlightToggle').classList.toggle('active',highlightActive);
+  document.getElementById('toggleLabel').classList.toggle('active',highlightActive);
+  document.getElementById('toggleLabel').textContent=highlightActive?'Yes, include a special highlight':'Nothing special this week';
+  document.getElementById('highlightFields').classList.toggle('visible',highlightActive);
+}
+
+document.getElementById('newsletterForm').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('submitBtn');
+  const errMsg=document.getElementById('errorMsg');
+  errMsg.classList.remove('visible');
+  const selectedCTA=document.querySelector('input[name="cta"]:checked').value;
+  const payload={
+    date:d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+    what_i_worked_on:document.getElementById('whatWorkedOn').value.trim(),
+    lesson_topic:document.getElementById('lessonTopic').value.trim(),
+    market_notes:document.getElementById('marketNotes').value.trim(),
+    cta_selection:selectedCTA,
+    special_highlight:highlightActive?{title:document.getElementById('highlightTitle').value.trim(),body:document.getElementById('highlightBody').value.trim()}:null
+  };
+  if(!payload.what_i_worked_on||!payload.lesson_topic){
+    errMsg.textContent='Please fill in at least sections 01 and 02 before submitting.';
+    errMsg.classList.add('visible');
+    return;
+  }
+  btn.classList.add('loading');
+  btn.querySelector('span').textContent='Sending to Make.com...';
+  try{
+    await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'});
+    document.getElementById('mainForm').style.display='none';
+    document.getElementById('successScreen').classList.add('visible');
+  }catch(err){
+    btn.classList.remove('loading');
+    btn.querySelector('span').textContent="Generate This Week's Draft";
+    errMsg.textContent='Connection failed. Check your webhook URL in the config.';
+    errMsg.classList.add('visible');
+  }
+});
+
+function resetForm(){
+  document.getElementById('newsletterForm').reset();
+  document.getElementById('mainForm').style.display='block';
+  document.getElementById('successScreen').classList.remove('visible');
+  document.getElementById('progressFill').style.width='0%';
+  highlightActive=false;
+  document.getElementById('highlightToggle').classList.remove('active');
+  document.getElementById('toggleLabel').textContent='Nothing special this week';
+  document.getElementById('toggleLabel').classList.remove('active');
+  document.getElementById('highlightFields').classList.remove('visible');
+  ['count1','count2','count3','count5'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.textContent='0 / '+(id==='count3'||id==='count5'?'400':'500');el.classList.remove('warning');}
+  });
+}
+</script>
+</body>
+</html>
